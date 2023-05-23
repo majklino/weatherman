@@ -25,15 +25,24 @@ public class CityService {
         return cityRepository.findAll();
     }
 
-    public City addNewCity(String name, float lat, float lon, String countryCode){
-        Country country = countryRepository.findByCode(countryCode);
+    public void measureForCity(String cityName, double lat, double lon, String countryCode, String countryName){
+        City city = cityRepository.findByName(cityName);
 
-        City city = new City();
-        city.setName(name);
-        city.setLat(lat);
-        city.setLon(lon);
-        city.setBelongsTo(country);
-        
-        return cityRepository.save(city);
+        if(city == null){
+            Country country = countryRepository.findByCode(countryCode);
+            if(country == null){
+                country = new Country();
+                country.setCode(countryCode);
+                country.setName(countryName);
+                countryRepository.save(country);
+            }
+            city = new City();
+            city.setName(cityName);
+            city.setLat(lat);
+            city.setLon(lon);
+            city.setBelongsTo(country);
+            cityRepository.save(city);
+
+        }
     }
 }
