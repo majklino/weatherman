@@ -1,6 +1,8 @@
 package com.main.weatherman.routes;
 
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import com.main.weatherman.services.CityService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.main.weatherman.clients.ApiClient;
+import com.main.weatherman.clients.CsvClient;
 import com.main.weatherman.model.City;
 
 @RestController
@@ -53,7 +56,7 @@ public class CitiesController {
     @GetMapping("/weather/{lat}/{lon}")
     public Object test2(@PathVariable float lat, @PathVariable float lon){
         ApiClient client = new ApiClient();
-        
+
         try {
             return client.getWeatherInfo(lat, lon);
         } catch (JsonMappingException e) {
@@ -61,6 +64,21 @@ public class CitiesController {
             return e;
         } catch (JsonProcessingException e) {
             //TODO
+            return e;
+        }
+    }
+
+    @GetMapping("/csv/{code}")
+    public Object test3(@PathVariable String code){
+        CsvClient client = new CsvClient();
+        
+        try {
+            return client.findCountryByCode(code);
+        } catch (FileNotFoundException e) {
+            // TODO 
+            return e;
+        } catch (IOException e) {
+            // TODO 
             return e;
         }
     }
