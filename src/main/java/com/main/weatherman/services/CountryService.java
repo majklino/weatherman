@@ -21,8 +21,8 @@ public class CountryService {
         return repository.findAll();
     }
 
-    public Country getCountryByName(String name){
-        return repository.findByName(name);
-    }
+    // public Country getCountryByName(String name){
+    //     return repository.findByName(name);
+    // }
 }
 

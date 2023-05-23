@@ -7,5 +7,5 @@ import com.main.weatherman.model.Country;
 
 @Repository
 public interface CountryRepository extends JpaRepository<Country, Integer> {
-    Country findByName(String name);
+    Country findByCode(String code);
 }
