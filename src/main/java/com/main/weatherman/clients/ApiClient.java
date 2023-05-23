@@ -23,7 +23,7 @@ public class ApiClient {
         return jsonObject;
     }
 
-    public Object getWeatherInfo(float lat, float lon) throws JsonMappingException, JsonProcessingException{
+    public Object getWeatherInfo(double lat, double lon) throws JsonMappingException, JsonProcessingException{
         String key = "0808f1653374e9b866e1b1a712fac9a7";
         String url = "https://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&units=metric&appid="+key;
         
