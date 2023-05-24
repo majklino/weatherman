@@ -29,7 +29,7 @@ public class CityService {
         return cityRepository.findAll();
     }
 
-    public void measureForCity(String cityName, double lat, double lon, String countryCode, String countryName, long timestamp, double temp){
+    public Measurement measureForCity(String cityName, double lat, double lon, String countryCode, String countryName, long timestamp, double temp, boolean manual){
         City city = cityRepository.findByName(cityName);
 
         if(city == null){
@@ -49,6 +49,7 @@ public class CityService {
 
         }
 
-        measurementRepository.save(new Measurement(city.getId(), timestamp, temp));
+        Measurement output = measurementRepository.save(new Measurement(city.getId(), timestamp, temp, manual));
+        return output;
     }
 }

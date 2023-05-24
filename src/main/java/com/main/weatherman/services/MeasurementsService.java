@@ -13,8 +13,8 @@ public class MeasurementsService {
         this.repository = repository;
     }
 
-    public void addNewMeasurement(int cityId, long timestamp, double temp){
-        this.repository.save(new Measurement(cityId, timestamp, temp));
+    public void addNewMeasurement(int cityId, long timestamp, double temp, boolean manual){
+        this.repository.save(new Measurement(cityId, timestamp, temp, manual));
     }
 
     public Object findMeasurementByCityId(int cityId){
