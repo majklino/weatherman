@@ -15,10 +15,14 @@ public class Measurement {
 
     private double temp;
 
-    public Measurement(int cityId, long timestamp, double temp){
+    private String type;
+
+    public Measurement(int cityId, long timestamp, double temp, boolean manual){
         this.cityId = cityId;
         this.timestamp = timestamp;
         this.temp = temp;
+        if(manual){ this.type = "manual"; }
+        else{ this.type = "automatic"; }
     }
 
     public int getCityId(){
@@ -43,6 +47,14 @@ public class Measurement {
 
     public void setTemp(double temp){
         this.temp = temp;
+    }
+
+    public String getType(){
+        return this.type;
+    }
+
+    public void setType(String type){
+        this.type = type;
     }
 
 
