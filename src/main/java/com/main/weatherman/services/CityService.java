@@ -7,25 +7,29 @@ import org.springframework.stereotype.Service;
 
 import com.main.weatherman.repositories.CityRepository;
 import com.main.weatherman.repositories.CountryRepository;
+import com.main.weatherman.repositories.MeasurementRepository;
 import com.main.weatherman.model.City;
 import com.main.weatherman.model.Country;
+import com.main.weatherman.model.Measurement;
 
 @Service
 public class CityService {
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
+    private final MeasurementRepository measurementRepository;
 
     @Autowired
-    public CityService(CityRepository cityRepository, CountryRepository countryRepository){
+    public CityService(CityRepository cityRepository, CountryRepository countryRepository, MeasurementRepository measurementRepository){
         this.cityRepository = cityRepository;
         this.countryRepository = countryRepository;
+        this.measurementRepository = measurementRepository;
     }
 
     public List<City> getAllCities(){
         return cityRepository.findAll();
     }
 
-    public void measureForCity(String cityName, double lat, double lon, String countryCode, String countryName){
+    public void measureForCity(String cityName, double lat, double lon, String countryCode, String countryName, long timestamp, double temp){
         City city = cityRepository.findByName(cityName);
 
         if(city == null){
@@ -44,5 +48,7 @@ public class CityService {
             cityRepository.save(city);
 
         }
+
+        measurementRepository.save(new Measurement(city.getId(), timestamp, temp));
     }
 }
