@@ -8,11 +8,15 @@ import org.springframework.stereotype.Service;
 import com.main.weatherman.repositories.CityRepository;
 import com.main.weatherman.repositories.CountryRepository;
 import com.main.weatherman.repositories.MeasurementRepository;
+
+import jakarta.transaction.Transactional;
+
 import com.main.weatherman.model.City;
 import com.main.weatherman.model.Country;
 import com.main.weatherman.model.Measurement;
 
 @Service
+@Transactional
 public class CityService {
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
@@ -30,6 +34,12 @@ public class CityService {
     }
 
     public Measurement measureForCity(String cityName, double lat, double lon, String countryCode, String countryName, long timestamp, double temp, boolean manual){
+        City city = this.addCity(cityName, lat, lon, countryCode, countryName);
+        Measurement output = measurementRepository.save(new Measurement(city.getId(), timestamp, temp, manual));
+        return output;
+    }
+
+    public City addCity(String cityName, double lat, double lon, String countryCode, String countryName){
         City city = cityRepository.findByName(cityName);
 
         if(city == null){
@@ -49,7 +59,10 @@ public class CityService {
 
         }
 
-        Measurement output = measurementRepository.save(new Measurement(city.getId(), timestamp, temp, manual));
-        return output;
+        return city;
+    }
+
+    public void removeCity(String cityname){
+        this.cityRepository.deleteByName(cityname);
     }
 }

@@ -13,20 +13,23 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.main.weatherman.clients.ApiClient;
 import com.main.weatherman.clients.CsvClient;
 import com.main.weatherman.model.City;
+import com.main.weatherman.model.Country;
 import com.main.weatherman.model.Measurement;
 
 @Service
 public class Measurer {
 
     private final CityService cityService;
+    private final CountryService countryService;
     private final ApiClient apiClient;
     private final CsvClient csvClient;
 
     @Autowired
-    public Measurer(CityService service, ApiClient apiClient, CsvClient csvCLient) {
+    public Measurer(CityService service, ApiClient apiClient, CsvClient csvCLient, CountryService countryService) {
         this.cityService = service;
         this.apiClient = apiClient;
         this.csvClient = csvCLient;
+        this.countryService = countryService;
     }
 
     public Measurement measureNew(String cityname, boolean manual) throws FileNotFoundException, IOException {
@@ -64,4 +67,23 @@ public class Measurer {
         Measurement meas = cityService.measureForCity(city.getName(), city.getLat(), city.getLon(), city.getBelongsTo().getCode(), city.getBelongsTo().getName(), timestamp, temp, manual);
         return meas;
     }
+
+    public City addCity(String cityname) throws FileNotFoundException, IOException{
+        Object cityInfoObj = apiClient.getCityInfoRequest(cityname);
+        HashMap<String, Object> cityInfo = (HashMap<String, Object>) ((List<Object>) cityInfoObj).get(0);
+        System.out.println(cityInfo);
+        double lat = (double) cityInfo.get("lat");
+        double lon = (double) cityInfo.get("lon");
+        String countryCode = (String) cityInfo.get("country");
+
+        String countryName = csvClient.findCountryByCode(countryCode);
+
+        return this.cityService.addCity(cityname, lat, lon, countryCode, countryName);
+    }
+
+    // public Country addCountry(String code) throws FileNotFoundException, IOException{
+    //     String countryName;
+    //     countryName = csvClient.findCountryByCode(code);
+    //     return this.countryService.addCountry(countryName, code);
+    // }
 }
