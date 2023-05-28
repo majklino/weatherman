@@ -21,15 +21,36 @@ function measure(){
     console.log(cityId);
 
     $.ajax({
-        url: 'last/' + cityId,
+        url: 'api/measure/last/' + cityId,
         method: 'GET',
         success: function(response) {
-            console.log(response);
-            
+            lastMeasurement = response;
+            showLastMeasurement();
+            $.ajax({
+                url: 'api/avgs',
+                method: 'GET',
+                success: function(response) {
+                    avgs = response;
+                    changeDisplayData(cityId);
+                    
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error:', error);
+                }
+            });
         },
         error: function(xhr, status, error) {
-            // Handle the error response
             console.log('Error:', error);
+        }
+    });
+}
+
+function showLastMeasurement(){
+    cities.forEach(city => {
+        if(city.id == lastMeasurement.cityId){
+            document.getElementById('lastName').innerText = 'City: ' + city.name;
+            document.getElementById('lastWhen').innerText = 'Time: ' + lastMeasurement.timestamp;
+            document.getElementById('lastTemp').innerText = 'Temperature: ' + lastMeasurement.temp + ' °C';
         }
     });
 }
@@ -42,8 +63,9 @@ cities.forEach(city => {
     select.add(newOption);
 });
 
+if(lastMeasurement){
+    showLastMeasurement();
+}
 
-
-console.log(lastMeasurement);
 
 //window.location.replace('...');

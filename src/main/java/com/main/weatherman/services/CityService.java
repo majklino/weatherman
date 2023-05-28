@@ -71,4 +71,8 @@ public class CityService {
     public void removeCity(String cityname){
         this.cityRepository.deleteByName(cityname);
     }
+
+    public City getCityById(int id){
+        return this.cityRepository.findById(id);
+    }
 }

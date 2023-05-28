@@ -9,6 +9,7 @@
     <section>
         <label for="cities">Choose a city:</label>
         <select name="cities" id="citySelect">
+            <option disabled>Select one--</option>
         </select>
 
         <div>
@@ -21,6 +22,12 @@
 
             <button id="measureBtn">Measure temperature for selected city</button>
             <!--<button>Measure temperature for all cities</button>-->
+        </div>
+
+        <div id="lastMeasurementDiv">
+            <p id="lastName"></p>
+            <p id="lastWhen"></p>
+            <p id="lastTemp"></p>
         </div>
 
     </section>
