@@ -35,7 +35,13 @@ public class CityService {
 
     public Measurement measureForCity(String cityName, double lat, double lon, String countryCode, String countryName, long timestamp, double temp, boolean manual){
         City city = this.addCity(cityName, lat, lon, countryCode, countryName);
-        Measurement output = measurementRepository.save(new Measurement(city.getId(), timestamp, temp, manual));
+        
+        String type = "automatic";
+        if(manual){
+            type = "manual";
+        }
+
+        Measurement output = measurementRepository.save(new Measurement(city.getId(), timestamp, temp, type));
         return output;
     }
 

@@ -2,6 +2,7 @@ package com.main.weatherman.services;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -66,6 +67,24 @@ public class Measurer {
 
         Measurement meas = cityService.measureForCity(city.getName(), city.getLat(), city.getLon(), city.getBelongsTo().getCode(), city.getBelongsTo().getName(), timestamp, temp, manual);
         return meas;
+    }
+
+    public List<Measurement> measureAll(boolean manual) throws JsonMappingException, JsonProcessingException{
+        long timestamp = System.currentTimeMillis() / 1000L;
+        List<Measurement> output = new ArrayList<Measurement>();
+
+        List<City> cities = this.cityService.getAllCities();
+        for (City city : cities) {
+            Object weatherInfoObj = apiClient.getWeatherInfo(city.getLat(), city.getLon());
+            HashMap<String, Object> weatherInfo = (HashMap<String, Object>) weatherInfoObj;
+            System.out.println(weatherInfo);
+            double temp = (double) ((HashMap<String, Object>) weatherInfo.get("main")).get("temp");
+            
+            Measurement meas = cityService.measureForCity(city.getName(), city.getLat(), city.getLon(), city.getBelongsTo().getCode(), city.getBelongsTo().getName(), timestamp, temp, manual);
+            output.add(meas);
+        }
+
+        return output;
     }
 
     public City addCity(String cityname) throws FileNotFoundException, IOException{

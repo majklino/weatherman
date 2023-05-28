@@ -1,18 +1,40 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Weatherman</title>
 </head>
+
 <body>
     <section>
-        
+        <label for="cities">Choose a city:</label>
+        <select name="cities" id="citySelect">
+        </select>
+
+        <div>
+            <p id="pAvg1"></p>
+            <p id="pAvg7"></p>
+            <p id="pAvg14"></p>
+        </div>
+
+        <div id="curTempsDiv">
+
+            <button>Measure temperature for selected city</button>
+            <button>Measure temperature for all cities</button>
+        </div>
+
     </section>
 
-    <h1>Welcome to my Spring Boot Thymeleaf Example!</h1>
-    <p>This is a sample HTML template rendered using Thymeleaf.</p>
-    <p th:text="'Hello, ' + ${msg} + '!'" />
+    <script th:inline="javascript">
+        /*<![CDATA[*/
 
+        var cities = /*[[${cities}]]*/ 'default';
+        var avgs = /*[[${avgs}]]*/ 'default';
+
+        /*]]>*/
+    </script>
     <script src="/js/script.js"></script>
 
 </body>
+
 </html>

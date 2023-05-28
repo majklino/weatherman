@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.main.weatherman.services.CityService;
 import com.main.weatherman.services.CountryService;
 import com.main.weatherman.services.Measurer;
@@ -35,6 +37,19 @@ public class Api {
     @GetMapping("/city/all")
     public Object getAllCities(){
         return this.cityService.getAllCities();
+    }
+
+    @GetMapping("measure/all")
+    public Object measureAll(){
+        try {
+            return this.measurer.measureAll(true);
+        } catch (JsonMappingException e) {
+            // TODO
+            return e;
+        } catch (JsonProcessingException e) {
+            // TODO
+            return e;
+        }
     }
 
     @GetMapping("/measure/{cityname}")
@@ -68,18 +83,5 @@ public class Api {
         this.cityService.removeCity(cityname);
         return cityname + " was deleted.";
     }
-
-    // @GetMapping("/country/add/{code}")
-    // public Object addCountry(@PathVariable String code){
-    //     try {
-    //         return this.measurer.addCountry(code);
-    //     } catch (FileNotFoundException e) {
-    //         // TODO
-    //         return e;
-    //     } catch (IOException e) {
-    //         // TODO
-    //         return e;
-    //     }
-    // }
     
 }

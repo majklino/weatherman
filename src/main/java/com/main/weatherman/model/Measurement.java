@@ -17,12 +17,11 @@ public class Measurement {
 
     private String type;
 
-    public Measurement(int cityId, long timestamp, double temp, boolean manual){
+    public Measurement(int cityId, long timestamp, double temp, String type){
         this.cityId = cityId;
         this.timestamp = timestamp;
         this.temp = temp;
-        if(manual){ this.type = "manual"; }
-        else{ this.type = "automatic"; }
+        this.type = type;
     }
 
     public int getCityId(){
