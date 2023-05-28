@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,15 @@ public class MeasurementsService {
             avg = sum / count;
         }
         return avg;
+    }
+
+    public Measurement getLastMeasurement(int cityId){
+        Optional<Measurement> opt = this.repository.findFirstByCityIdOrderByTimestampDesc(cityId);
+        if(opt.isPresent()){
+            return opt.get();
+        }
+        else{
+            return null;
+        }
     }
 }

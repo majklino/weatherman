@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.main.weatherman.model.AverageTemp;
 import com.main.weatherman.model.City;
+import com.main.weatherman.model.Measurement;
 import com.main.weatherman.services.CityService;
 import com.main.weatherman.services.MeasurementsService;
 
@@ -49,5 +51,13 @@ public class UiController {
         model.addAttribute("avgs", avgs);
 
         return "index";
+    }
+
+    @GetMapping("last/{cityId}")
+    public String last(Model model, @PathVariable int cityId){
+        System.out.println(cityId);
+        Measurement lastMeasurement = this.measurementsService.getLastMeasurement(cityId);
+        model.addAttribute("lastMeasurement", lastMeasurement);
+        return index(model);
     }
 }
