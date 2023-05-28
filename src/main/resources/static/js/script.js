@@ -1,6 +1,7 @@
 document.getElementById('citySelect').addEventListener('change', changeCity);
 document.getElementById('measureBtn').addEventListener('click', measure);
 document.getElementById('newCityForm').addEventListener('submit', addAndMeasure);
+document.getElementById('deleteBtn').addEventListener('click', deleteSelectedCity);
 
 function changeCity() {
     changeDisplayData(document.getElementById('citySelect').value);
@@ -74,7 +75,7 @@ function addAndMeasure(e) {
                         method: 'GET',
                         success: function (response) {
                             avgs = response;
-        
+
                         },
                         error: function (xhr, status, error) {
                             console.log('Error:', error);
@@ -93,10 +94,13 @@ function addAndMeasure(e) {
 }
 
 function showLastMeasurement() {
+    const date= new Date(lastMeasurement.timestamp * 1000);
+    var dateFormat = date.getHours() + ":" + date.getMinutes() + ", "+ date.toDateString();
     cities.forEach(city => {
         if (city.id == lastMeasurement.cityId) {
+            document.getElementById('lastTitle').innerHTML = '<b>Last measurement:</b>';
             document.getElementById('lastName').innerText = 'City: ' + city.name;
-            document.getElementById('lastWhen').innerText = 'Time: ' + lastMeasurement.timestamp;
+            document.getElementById('lastWhen').innerText = 'Time: ' + dateFormat;
             document.getElementById('lastTemp').innerText = 'Temperature: ' + lastMeasurement.temp + ' °C';
         }
     });
@@ -115,6 +119,41 @@ function refreshCities() {
         newOption.text = city.name;
         select.add(newOption);
     });
+}
+
+function deleteSelectedCity() {
+    cityId = document.getElementById('citySelect').value;
+    cityName = '';
+    cities.forEach(city => {
+        if (city.id == cityId) {
+            cityName = city.name;
+        }
+    });
+
+    if (confirm('Are you sure you want to delete ' + cityName + '?')) {
+        $.ajax({
+            url: 'api/city/remove/' + cityName,
+            method: 'GET',
+            success: function (response) {
+                console.log(response);
+                changeDisplayData(0);
+                $.ajax({
+                    url: 'api/city/all',
+                    method: 'GET',
+                    success: function (response) {
+                        cities = response;
+                        refreshCities();
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error:', error);
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.log('Error:', error);
+            }
+        });
+    }
 }
 
 refreshCities();
