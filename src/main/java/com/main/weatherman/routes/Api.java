@@ -8,6 +8,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +38,7 @@ public class Api {
     private final Measurer measurer;
     private final MeasurementsService measurementsService;
     private final CsvExportService csvService;
+    private static final Logger logger = LoggerFactory.getLogger(Api.class);
 
     @Autowired
     public Api(CountryService c1, CityService c2, MeasurementsService m1, Measurer m2, CsvExportService csv){
@@ -48,29 +51,33 @@ public class Api {
 
     @GetMapping("/country/all")
     public Object getAllCountries(){
+        logger.info("/country/all called...");
         return this.countryService.getAllCountries();
     }
 
     @GetMapping("/city/all")
     public Object getAllCities(){
+        logger.info("/city/all called...");
         return this.cityService.getAllCities();
     }
 
     @GetMapping("measure/all")
     public Object measureAll(){
+        logger.info("/measure/all called...");
         try {
             return this.measurer.measureAll(true);
         } catch (JsonMappingException e) {
-            // TODO
+            logger.error("JsonMapping Exception!", e);
             return e;
         } catch (JsonProcessingException e) {
-            // TODO
+            logger.error("Json Processing Exception!", e);
             return e;
         }
     }
 
     @GetMapping("measure/last/{cityId}")
     public Object measureLast(@PathVariable int cityId){
+        logger.info("/measure/last/" + cityId + " called...");
         City city = this.cityService.getCityById(cityId);
         this.measure(city.getName());
         return this.measurementsService.getLastMeasurement(cityId);
@@ -78,43 +85,48 @@ public class Api {
 
     @GetMapping("last/{cityId}")
     public Object last(@PathVariable int cityId){
+        logger.info("/last/" + cityId + " called...");
         return this.measurementsService.getLastMeasurement(cityId);
     }
 
     @GetMapping("/measure/{cityname}")
     public Object measure(@PathVariable String cityname){
+        logger.info("/measure/" + cityname + " called...");
         try {
             return this.measurer.measureNew(cityname, true);
         } catch (FileNotFoundException e) {
-            // TODO
+            logger.error("File not found!", e);
             return e;
         } catch (IOException e) {
-            // TODO
+            logger.error("IOException!", e);
             return e;
         }
     }
 
     @GetMapping("/city/add/{cityname}")
     public Object addCity(@PathVariable String cityname){
+        logger.info("/city/add/" + cityname + " called...");
         try {
             return this.measurer.addCity(cityname);
         } catch (FileNotFoundException e) {
-            // TODO
+            logger.error("File not found!", e);
             return e;
         } catch (IOException e) {
-            // TODO
+            logger.error("IOException!", e);
             return e;
         }
     }
 
     @GetMapping("/city/remove/{cityname}")
     public String removeCity(@PathVariable String cityname){
+        logger.info("/city/remove/" + cityname + " called...");
         this.cityService.removeCity(cityname);
         return cityname + " was deleted.";
     }
 
     @GetMapping("/avgs")
     public List<AverageTemp> getAvgsCities(){
+        logger.info("/avgs called...");
         List<City> cities = this.cityService.getAllCities();
         List<AverageTemp> avgs = new ArrayList<AverageTemp>();
         for (City city : cities) {
@@ -136,6 +148,7 @@ public class Api {
 
     @GetMapping("/csv")
     public ResponseEntity<ByteArrayResource> csv() throws IOException {
+        logger.info("/csv called...");
         String path = "export.csv";
         this.csvService.writeToCsv(path);
 
