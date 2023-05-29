@@ -166,5 +166,10 @@ public class Api {
                 .contentLength(file.length())
                 .body(resource);
     }
+
+    @GetMapping("/repeat/{txt}")
+    public String repeat(@PathVariable String txt){
+        return txt;
+    }
     
 }
